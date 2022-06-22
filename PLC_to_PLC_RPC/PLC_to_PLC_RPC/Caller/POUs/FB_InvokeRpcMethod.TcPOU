@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
-  <POU Name="FB_RPC" Id="{639a9909-011c-49da-ada4-fa1fe8ca3aec}" SpecialFunc="None">
+  <POU Name="FB_InvokeRpcMethod" Id="{639a9909-011c-49da-ada4-fa1fe8ca3aec}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'hide_all_locals'}
-FUNCTION_BLOCK FB_RPC
+FUNCTION_BLOCK FB_InvokeRpcMethod
 VAR_INPUT
 	bCall					: BOOL;
 	sNetId					: T_AmsNetId;

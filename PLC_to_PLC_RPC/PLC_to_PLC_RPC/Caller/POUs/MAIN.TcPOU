@@ -7,7 +7,7 @@ VAR
 	AddParams			:M_ADD_Parameters := (A := 40, B := 2);
 	MeaningOfLife		:LREAL;
 	
-	fbRPC				:FB_RPC;
+	fbRPC				:FB_InvokeRpcMethod;
 	xBusy				:BOOL;
 	xError				:BOOL;	
 	nErrorID			:UDINT;	
