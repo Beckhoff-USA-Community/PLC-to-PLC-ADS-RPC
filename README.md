@@ -1,8 +1,8 @@
 # About This Repository
 
 Example contains:
-1. A "provider" PLC, with a PLC function block method to be called via RPC.
-2. A "caller" PLC, with a example function block that calls the function block method in the "provider" PLC.
+1. A "provider" PLC (port 851), with a function block method to be called via RPC.
+2. A "caller" PLC (port 852), that invokes the method in the function block of the "provider" PLC.
 
 FB_InvokeRpcMethod is generic and can be used on any PLC method exposed via the attribute ["{attribute 'hide_all_locals'}"] (https://infosys.beckhoff.com/content/1033/tc3_plc_intro/7145472907.html?id=6105454089919227750)
 
