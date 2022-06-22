@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <POU Name="FB_RPC" Id="{639a9909-011c-49da-ada4-fa1fe8ca3aec}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'hide_all_locals'}
+FUNCTION_BLOCK FB_RPC
+VAR_INPUT
+	bCall					: BOOL;
+	sNetId					: T_AmsNetId;
+	nPort					: T_AmsPort := 851;
+	sMethodName				: STRING(255); //Example:MAIN.fbMath#M_ADD
+	nSrcAddrParameter		: PVOID;
+	nLenParameter			: UDINT;
+	                          
+	nDestAddrReturnValue	: PVOID;
+	nLenReturnValue			: UDINT;
+	                          
+	tTimeout				: TIME := DEFAULT_ADS_TIMEOUT;
+	eComMode				: E_AdsComMode := eAdsComModeSecureCom;
+END_VAR                       
+VAR_OUTPUT                    
+	bBusy					: BOOL;
+	bError					: BOOL;
+	nErrorId				: UDINT;
+END_VAR                       
+VAR                           
+	_sNetId					: T_AmsNetId;
+ 	_sMethodName			: STRING(255);	
+	_nPort					: T_AmsPort;
+	fbGetHandle				: ADSRDWRT;
+	fbCallMethod			: ADSRDWRT;
+	fbReleaseHandle			: ADSWRITE;
+	trigCall				: R_TRIG;
+	eStep,eNextStep			: (IDLE,GET_HANDLE,CALL_METHOD,RELEASE_HANDLE) :=IDLE ;
+	nMethodHandle 			: DWORD := 0;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[trigCall(CLK:=bCall);
+CASE eStep OF
+	IDLE:
+		IF trigCall.Q THEN
+			bBusy 				:= TRUE;
+			nErrorId 			:= 0;
+			bError 				:= FALSE;
+			fbGetHandle			(WRTRD := FALSE);
+			fbCallMethod		(WRTRD := FALSE);
+			fbReleaseHandle		(WRITE := FALSE);
+			IF nMethodHandle <> 0 THEN
+				IF 	_sMethodName =  sMethodName AND
+					_sNetId 	 = 	sNetId 		AND
+					_nPort 		 = 	nPort
+				THEN
+					eStep			:= CALL_METHOD;
+				ELSE        	
+					eStep			:= RELEASE_HANDLE;
+					eNextStep		:= GET_HANDLE;
+				END_IF
+			ELSE
+				eStep	:=GET_HANDLE;
+			END_IF
+		ELSE
+			bBusy := FALSE;
+		END_IF
+		
+	GET_HANDLE:
+		fbGetHandle(NETID 		:= sNetId,
+					PORT 		:= nPort,
+					IDXGRP 		:= ADSIGRP_SYM_HNDBYNAME,
+					IDXOFFS 	:= 0,
+					SRCADDR 	:= ADR(sMethodName),
+					WRITELEN 	:= TO_UDINT(LEN(sMethodName)),
+					DESTADDR 	:= ADR(nMethodHandle),
+					READLEN 	:= SIZEOF(nMethodHandle),
+					WRTRD 		:= TRUE,
+					TMOUT 		:= tTimeout,
+					ERR 		=> bError,
+					ERRID 		=> nErrorId);
+
+		IF NOT fbGetHandle.BUSY THEN
+			IF NOT bError THEN
+				_sMethodName 	:= sMethodName;
+				_sNetId 		:= sNetId;
+				_nPort 			:= nPort;
+				eStep			:= CALL_METHOD;
+			ELSE
+				eStep			:= IDLE;
+			END_IF
+			fbGetHandle(WRTRD := FALSE);
+		END_IF
+		
+	CALL_METHOD:
+		fbCallMethod( NETID		:= sNetId , 
+					  PORT		:= nPort , 
+					  IDXGRP	:= ADSIGRP_SYM_VALBYHND , 
+					  IDXOFFS	:= nMethodHandle , 
+					  WRITELEN	:= nLenParameter , 
+					  READLEN	:= nLenReturnValue , 
+					  SRCADDR	:= nSrcAddrParameter , 
+					  DESTADDR	:= nDestAddrReturnValue , 
+					  WRTRD		:= TRUE , 
+					  TMOUT		:= tTimeout , 
+					  ERR		=> bError , 
+					  ERRID		=> nErrorId );
+
+		IF NOT fbCallMethod.Busy THEN
+			IF NOT bError THEN
+				IF (eComMode = eAdsComModeSecureCom) THEN
+					eStep		:= RELEASE_HANDLE;
+					eNextStep	:= IDLE;
+				ELSE
+					eStep		:= IDLE;
+				END_IF
+			ELSE
+				eStep			:= RELEASE_HANDLE;
+				eNextStep		:= IDLE;				
+			END_IF
+			fbCallMethod(WRTRD := FALSE);
+		END_IF							 
+							 
+							 
+	RELEASE_HANDLE:
+		fbReleaseHandle(NETID 		:= sNetId,
+						PORT 		:= nPort,
+						IDXGRP 		:= ADSIGRP_SYM_RELEASEHND,
+						IDXOFFS 	:= nMethodHandle,
+						LEN 		:= 0,
+						WRITE 		:= TRUE,
+						TMOUT 		:= tTimeout,
+						ERR 		=> bError,
+						ERRID 		=> nErrorId);
+
+		IF NOT fbReleaseHandle.Busy THEN
+			nMethodHandle 	:= 0;
+			fbReleaseHandle	(Write := FALSE);
+			eStep 			:= eNextStep;
+		END_IF
+	
+END_CASE]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

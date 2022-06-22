@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="MAIN" Id="{5af3ba7a-78d9-4457-8427-585f93cb09e4}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	fbMath	:FB_Math;
+	icnt	:UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[icnt:=icnt+1;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

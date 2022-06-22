@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="FB_Math" Id="{41d38852-5f0d-44f0-afad-0701fd81f2b7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Math
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="M_ADD" Id="{6ceebd50-cabd-4910-a186-91a23c2aa960}">
+      <Declaration><![CDATA[{attribute'TcRpcEnable'}
+METHOD M_ADD 	: LREAL
+VAR_INPUT
+	Param		:M_ADD_Parameters;
+END_VAR
+VAR_INST
+	LastResult	:LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[M_ADD		:=Param.A+Param.B;
+LastResult	:=M_ADD;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
