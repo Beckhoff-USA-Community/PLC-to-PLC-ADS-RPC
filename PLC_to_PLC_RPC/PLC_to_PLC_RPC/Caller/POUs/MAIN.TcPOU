@@ -3,37 +3,50 @@
   <POU Name="MAIN" Id="{e4d3bc24-10d3-4594-9f36-0dd39168eed0}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	xCall				:BOOL;
-	AddParams			:M_ADD_Parameters := (A := 40, B := 2);
-	MeaningOfLife		:LREAL;
+   xCall : BOOL;
+   AddParams : M_ADD_Parameters := (A := 40, B := 2);
+   MeaningOfLife : LREAL;
 	
-	fbRPC				:FB_InvokeRpcMethod;
-	invokeRpc :T_InvokeRpcMethod;
-	xBusy				:BOOL;
-	xError				:BOOL;	
-	nErrorID			:UDINT;	
-	methodHandle : ST_SymbolHandle;
-	taskState : I_Executable;
-	invokeDone, invokeError, invokeBusy : BOOL;
-	logger : T_GetLastMsgLogger;
-	firstScan : BOOL := true;
+	
+	askForTheOdds : BOOL;
+   c3poAddition : M_ADD_Parameters := (A := 3000, B := 720);
+   OddsOfNavigatingAnAsteroidField : LREAL;
+	C3PO_Says : STRING(255);
+
+   fbRPC : FB_InvokeRpcMethod;
+   invokeRpc : T_InvokeRpcMethod;
+   xBusy : BOOL;
+   xError : BOOL;
+   nErrorID : UDINT;
+   methodHandle : ST_SymbolHandle;
+   taskState : I_Executable;
+   invokeDone, invokeError, invokeBusy : BOOL;
+	doneRt, errRt, busyRt : R_TRIG;
+   logger : T_GetLastMsgLogger;
+   firstScan : BOOL := TRUE;
+	
+	
+END_VAR
+VAR CONSTANT
+	EMPTY_STRING : STRING := '';
+	C3PO_ERR_MSG : STRING(255) := 'Sir, I don$'t know where your ship learned to communicate, but it has the most peculiar dialect.';
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[//fbRPC(
-//	bCall					:=xCall , 
-//	sNetId					:='' , 
-//	nPort					:=851 , 
-//	sMethodName				:='MAIN.fbMath#M_ADD' , 
-//	nSrcAddrParameter		:=ADR(AddParams) , 
-//	nLenParameter			:=SIZEOF(AddParams) , 
-//	nDestAddrReturnValue	:=ADR(MeaningOfLife) , 
-//	nLenReturnValue			:=SIZEOF(MeaningOfLife) , 
-//	tTimeout				:=DEFAULT_ADS_TIMEOUT , 
-//	eComMode				:=E_AdsComMode.eAdsComModeFastCom , 
-//	bBusy					=>xBusy , 
-//	bError					=>xError , 
-//	nErrorId				=>nErrorID );
+      <ST><![CDATA[fbRPC(
+	bCall:=xCall , 
+	sNetId :='' , 
+	nPort :=851 , 
+	sMethodName :='MAIN.fbMath#M_ADD' , 
+	nSrcAddrParameter :=ADR(AddParams) , 
+	nLenParameter :=SIZEOF(AddParams) , 
+	nDestAddrReturnValue :=ADR(MeaningOfLife) , 
+	nLenReturnValue :=SIZEOF(MeaningOfLife) , 
+	tTimeout :=DEFAULT_ADS_TIMEOUT , 
+	eComMode :=E_AdsComMode.eAdsComModeFastCom , 
+	bBusy =>xBusy , 
+	bError =>xError , 
+	nErrorId =>nErrorID );
 
 IF firstScan THEN
 	firstScan := FALSE;
@@ -43,17 +56,17 @@ END_IF
 
 logger.lastLog;
 logger.lasLogLevel;
+C3PO_Says;
 
 invokeRpc();
-
 methodHandle.SymbolAddress.Ads.netId := F_ScanAmsNetIds('0.0.0.0.0.0.0');
 methodHandle.SymbolAddress.Ads.port := 851;
 methodHandle.SymbolAddress.SymbolName := 'MAIN.fbMath#M_ADD';
-methodHandle.SymbolAddress.WriteRef := F_BIGTYPE(pData := ADR(AddParams), cbLen := SIZEOF(AddParams));
-methodHandle.SymbolAddress.ReadRef := F_LREAL(MeaningOfLife);
+methodHandle.SymbolAddress.WriteRef := F_BIGTYPE(pData := ADR(c3poAddition), cbLen := SIZEOF(c3poAddition));
+methodHandle.SymbolAddress.ReadRef := F_LREAL(OddsOfNavigatingAnAsteroidField);
 
-IF xCall THEN
-   xCall := FALSE;
+IF askForTheOdds THEN
+   askForTheOdds := FALSE;
    taskState := 0;
 
    invokeRpc.TryInvokeMethodCall(
@@ -67,23 +80,33 @@ END_IF
 invokeBusy := taskState <> 0 AND_THEN taskState.Busy;
 invokeDone := taskState <> 0 AND_THEN taskState.Done;
 invokeError := taskState <> 0 AND_THEN taskState.Error;
+busyRt( CLK := invokeBusy );
+doneRt( CLK := invokeDone );
+errRt( CLK := invokeError);
+
+IF busyRt.Q THEN
+	C3PO_Says := EMPTY_STRING;
+END_IF
+
+IF doneRt.Q  THEN
+	C3PO_Says := CONCAT(
+							'Sir, the possibility of successfully navigating an asteroid field is approximately ', 
+							CONCAT( TO_STRING(TO_INT(OddsOfNavigatingAnAsteroidField)), ' to 1.')
+						);
+END_IF
+
+IF errRt.Q  THEN
+	C3PO_Says := C3PO_ERR_MSG;
+END_IF
+
+
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="161" Count="13" />
-      <LineId Id="203" Count="0" />
-      <LineId Id="202" Count="0" />
-      <LineId Id="204" Count="0" />
-      <LineId Id="206" Count="1" />
-      <LineId Id="205" Count="0" />
-      <LineId Id="211" Count="0" />
-      <LineId Id="175" Count="0" />
-      <LineId Id="210" Count="0" />
-      <LineId Id="212" Count="0" />
-      <LineId Id="176" Count="18" />
-      <LineId Id="209" Count="0" />
-      <LineId Id="198" Count="1" />
-      <LineId Id="195" Count="0" />
+      <LineId Id="461" Count="56" />
+      <LineId Id="525" Count="1" />
+      <LineId Id="528" Count="0" />
+      <LineId Id="518" Count="6" />
       <LineId Id="29" Count="0" />
     </LineIds>
   </POU>
