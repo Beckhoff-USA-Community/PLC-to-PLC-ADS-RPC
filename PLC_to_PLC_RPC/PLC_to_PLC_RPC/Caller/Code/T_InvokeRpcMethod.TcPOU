@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="T_InvokeRpcMethod" Id="{61e4e0cc-2491-4f76-aa9c-716399cb6a5e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK T_InvokeRpcMethod
+VAR_INPUT
+   bCall : BOOL;
+   sNetId : T_AmsNetId;
+   nPort : T_AmsPort := 851;
+   sMethodName : STRING(255); //Example:MAIN.fbMath#M_ADD
+   nSrcAddrParameter : PVOID;
+   nLenParameter : UDINT;
+
+   nDestAddrReturnValue : PVOID;
+   nLenReturnValue : UDINT;
+
+   tTimeout : TIME := DEFAULT_ADS_TIMEOUT;
+   eComMode : E_AdsComMode := eAdsComModeSecureCom;
+END_VAR
+VAR_OUTPUT
+   bBusy : BOOL;
+   bError : BOOL;
+   nErrorId : UDINT;
+END_VAR
+VAR
+   getHandle : T_GetHandle;
+   callMethod : T_CallMethod;
+   releaseHandle : T_ReleaseHandle;
+   symbolHandle : ST_SymbolHandle;
+
+   _sNetId : T_AmsNetId;
+   _sMethodName : STRING(255);
+   _nPort : T_AmsPort;
+   //	fbGetHandle				: ADSRDWRT;
+   //	fbCallMethod			: ADSRDWRT;
+   //	fbReleaseHandle			: ADSWRITE;
+   trigCall : R_TRIG;
+   eStep, prevStep : (
+      IDLE,
+      GET_HANDLE,
+      CALL_METHOD,
+      RELEASE_HANDLE
+   ) := IDLE;
+  status : I_Executable;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[trigCall(CLK := bCall);
+
+CASE eStep OF
+   IDLE:
+	
+		prevStep := eStep;
+      IF trigCall.Q THEN
+         bBusy := TRUE;
+         nErrorId := 0;
+         bError := FALSE;
+			
+			symbolHandle.SymbolAddress.SymbolName := sMethodName;
+			symbolHandle.Handle := 0;
+			symbolHandle.SymbolAddress.Ads.netId := F_ScanAmsNetIds(sNetId);
+			symbolHandle.SymbolAddress.Ads.port := nPort;
+			
+			symbolHandle.SymbolAddress.WriteRef.cbLen := nLenParameter;
+			symbolHandle.SymbolAddress.WriteRef.pData := nSrcAddrParameter;
+			
+			symbolHandle.SymbolAddress.ReadRef.cbLen := nLenReturnValue;
+			symbolHandle.SymbolAddress.ReadRef.pData := nDestAddrReturnValue;
+			eStep := GET_HANDLE;
+         
+      ELSE
+         bBusy := FALSE;
+      END_IF
+
+   GET_HANDLE:
+      IF prevStep <> eStep THEN
+			getHandle.TryGetHandle(symbolHandle, DEFAULT_ADS_TIMEOUT);
+			prevStep := eStep;
+			
+		ELSE
+			IF getHandle.Done THEN
+				eStep := CALL_METHOD;
+			END_IF
+			
+		END_IF
+
+   CALL_METHOD:
+	
+      IF prevStep <> eStep THEN
+			callMethod.TryMethodCall(symbolHandle, DEFAULT_ADS_TIMEOUT);
+			prevStep := eStep;
+			
+		ELSE
+			IF callMethod.Done THEN
+				eStep := RELEASE_HANDLE;
+			END_IF
+			
+		END_IF
+      
+
+   RELEASE_HANDLE:
+      
+		IF prevStep <> eStep THEN
+			releaseHandle.TryReleaseHandle(symbolHandle, DEFAULT_ADS_TIMEOUT);
+			prevStep := eStep;
+			
+		ELSE
+			IF releaseHandle.Done THEN
+				eStep := IDLE;
+			END_IF
+			
+		END_IF
+
+END_CASE
+
+getHandle();
+callMethod();
+releaseHandle();]]></ST>
+    </Implementation>
+    <LineIds Name="T_InvokeRpcMethod">
+      <LineId Id="152" Count="3" />
+      <LineId Id="345" Count="1" />
+      <LineId Id="156" Count="2" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="264" Count="0" />
+      <LineId Id="260" Count="3" />
+      <LineId Id="269" Count="0" />
+      <LineId Id="268" Count="0" />
+      <LineId Id="267" Count="0" />
+      <LineId Id="270" Count="0" />
+      <LineId Id="265" Count="0" />
+      <LineId Id="347" Count="0" />
+      <LineId Id="163" Count="0" />
+      <LineId Id="174" Count="5" />
+      <LineId Id="192" Count="0" />
+      <LineId Id="312" Count="0" />
+      <LineId Id="318" Count="1" />
+      <LineId Id="316" Count="1" />
+      <LineId Id="320" Count="1" />
+      <LineId Id="314" Count="0" />
+      <LineId Id="313" Count="0" />
+      <LineId Id="206" Count="1" />
+      <LineId Id="323" Count="9" />
+      <LineId Id="322" Count="0" />
+      <LineId Id="236" Count="2" />
+      <LineId Id="335" Count="0" />
+      <LineId Id="344" Count="0" />
+      <LineId Id="336" Count="7" />
+      <LineId Id="254" Count="5" />
+      <LineId Id="151" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

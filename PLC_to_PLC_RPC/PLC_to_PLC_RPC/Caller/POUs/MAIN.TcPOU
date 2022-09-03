@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="MAIN" Id="{e4d3bc24-10d3-4594-9f36-0dd39168eed0}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
@@ -8,26 +8,47 @@ VAR
 	MeaningOfLife		:LREAL;
 	
 	fbRPC				:FB_InvokeRpcMethod;
+	invokeRpc :T_InvokeRpcMethod;
 	xBusy				:BOOL;
 	xError				:BOOL;	
 	nErrorID			:UDINT;	
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbRPC(
-	bCall					:=xCall , 
-	sNetId					:='' , 
-	nPort					:=851 , 
-	sMethodName				:='MAIN.fbMath#M_ADD' , 
-	nSrcAddrParameter		:=ADR(AddParams) , 
-	nLenParameter			:=SIZEOF(AddParams) , 
-	nDestAddrReturnValue	:=ADR(MeaningOfLife) , 
-	nLenReturnValue			:=SIZEOF(MeaningOfLife) , 
-	tTimeout				:=DEFAULT_ADS_TIMEOUT , 
-	eComMode				:=E_AdsComMode.eAdsComModeFastCom , 
-	bBusy					=>xBusy , 
-	bError					=>xError , 
-	nErrorId				=>nErrorID );]]></ST>
+      <ST><![CDATA[//fbRPC(
+//	bCall					:=xCall , 
+//	sNetId					:='' , 
+//	nPort					:=851 , 
+//	sMethodName				:='MAIN.fbMath#M_ADD' , 
+//	nSrcAddrParameter		:=ADR(AddParams) , 
+//	nLenParameter			:=SIZEOF(AddParams) , 
+//	nDestAddrReturnValue	:=ADR(MeaningOfLife) , 
+//	nLenReturnValue			:=SIZEOF(MeaningOfLife) , 
+//	tTimeout				:=DEFAULT_ADS_TIMEOUT , 
+//	eComMode				:=E_AdsComMode.eAdsComModeFastCom , 
+//	bBusy					=>xBusy , 
+//	bError					=>xError , 
+//	nErrorId				=>nErrorID );
+
+invokeRpc(bCall := xCall,
+   sNetId := '',
+   nPort := 851,
+   sMethodName := 'MAIN.fbMath#M_ADD',
+   nSrcAddrParameter := ADR(AddParams),
+   nLenParameter := SIZEOF(AddParams),
+   nDestAddrReturnValue := ADR(MeaningOfLife),
+   nLenReturnValue := SIZEOF(MeaningOfLife),
+   tTimeout := DEFAULT_ADS_TIMEOUT,
+   eComMode := E_AdsComMode.eAdsComModeFastCom,
+   bBusy => xBusy,
+   bError => xError,
+   nErrorId => nErrorID
+);
+]]></ST>
     </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="45" Count="28" />
+      <LineId Id="29" Count="0" />
+    </LineIds>
   </POU>
 </TcPlcObject>

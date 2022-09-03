@@ -17,6 +17,42 @@
     <LibraryReferences>{ee468f5f-61d8-482c-875c-ffa44b319bfe}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Code\F_GetAmsNetId.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\I_Executable.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\I_Logger.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\ST_AdsReadWriteOptions.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\ST_SymbolHandle.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\ST_SymbolAddress.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\T_AdsWrite.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\T_ReleaseHandle.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\T_GetHandle.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\T_CallMethod.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\T_AdsReadWrite.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Code\T_InvokeRpcMethod.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
@@ -30,6 +66,7 @@
   <ItemGroup>
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
+    <Folder Include="Code" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
   </ItemGroup>
@@ -46,6 +83,10 @@
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
     </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_Utilities">
+      <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Utilities</Namespace>
+    </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
@@ -55,6 +96,11 @@
     <None Include="Caller.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Code\README.MD">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
