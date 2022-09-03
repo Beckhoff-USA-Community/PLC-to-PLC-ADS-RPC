@@ -48,6 +48,17 @@ END_VAR]]></Declaration>
         </Implementation>
       </Get>
     </Property>
+    <Method Name="SetLogger" Id="{c2aee71b-6242-41bd-ad56-2f80a205093c}">
+      <Declaration><![CDATA[METHOD PUBLIC SetLogger
+VAR_INPUT
+	logger : I_Logger;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.logger := logger;
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="ToLog" Id="{00a93180-ffe4-4f97-a177-e40759de868d}">
       <Declaration><![CDATA[METHOD PRIVATE ToLog
 VAR_INPUT
@@ -112,6 +123,10 @@ TryReleaseHandle := write.TryRequest( readWriteOpts, status => status );]]></ST>
     </LineIds>
     <LineIds Name="T_ReleaseHandle.Error.Get">
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_ReleaseHandle.SetLogger">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="T_ReleaseHandle.ToLog">
       <LineId Id="5" Count="0" />

@@ -38,6 +38,9 @@
     <Compile Include="Code\T_AdsWrite.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Code\T_GetLastMsgLogger.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Code\T_ReleaseHandle.TcPOU">
       <SubType>Code</SubType>
     </Compile>

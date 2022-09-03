@@ -4,10 +4,10 @@
     <Declaration><![CDATA[FUNCTION_BLOCK T_AdsWrite IMPLEMENTS I_Executable
 VAR
    logger : I_Logger;
-	_readWriteOpts : ST_AdsReadWriteOptions;
-	
-  write : ADSWRITE;
+   _readWriteOpts : ST_AdsReadWriteOptions;
 
+   write : ADSWRITE;
+   {attribute 'to_String'}
    state, prevState : (
       IDLE,
       REQUEST,
@@ -104,15 +104,21 @@ write();]]></ST>
       <Implementation>
         <ST><![CDATA[IsEntryActionAndLog := prevState <> state;
 
+IF NOT IsEntryActionAndLog THEN
+   RETURN;
+END_IF
+
 // useful to debug state transitions. to avoid "chatter" LogFramework should have runtime log level switches 
 // i.e. https://github.com/Intecre/twincat-utils/tree/master/IntecreUtilities/IntecreUtilities/IntecreUtilities/Utilities/Logger
 // see also https://github.com/Intecre/twincat-utils/blob/master/IntecreUtilities/IntecreUtilities/IntecreUtilities/Utilities/T_NamedBase.TcPOU
+
 ToLog(
-	Msg := CONCAT(CONCAT(TO_STRING(prevState), ' transition to state '), TO_STRING(state)), 
-	LogLevel:= LOG_DEBUG
+   Msg := CONCAT(CONCAT(TO_STRING(prevState), ' transition to state '), TO_STRING(state)),
+   LogLevel := LOG_DEBUG
 );
 
-prevState := state;]]></ST>
+prevState := state;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="SetLogger" Id="{e353218c-cc11-49b0-a50b-c879a94e2413}">
@@ -194,12 +200,7 @@ status := THIS^;]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_AdsWrite.IsEntryActionAndLog">
-      <LineId Id="5" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="14" Count="1" />
-      <LineId Id="6" Count="3" />
-      <LineId Id="12" Count="0" />
+      <LineId Id="38" Count="15" />
       <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="T_AdsWrite.SetLogger">

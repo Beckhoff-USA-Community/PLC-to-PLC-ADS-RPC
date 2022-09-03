@@ -48,6 +48,17 @@ END_VAR]]></Declaration>
         </Implementation>
       </Get>
     </Property>
+    <Method Name="SetLogger" Id="{d1d3a7cd-3600-43b1-ac6f-498d2468a79a}">
+      <Declaration><![CDATA[METHOD PUBLIC SetLogger
+VAR_INPUT
+	logger : I_Logger;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.logger := logger;
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="ToLog" Id="{0937adbe-d5e3-4e76-944f-dcf1f4b30465}">
       <Declaration><![CDATA[METHOD PRIVATE ToLog
 VAR_INPUT
@@ -111,6 +122,10 @@ TryMethodCall := readWrite.TryRequest( readWriteOpts, status => status );]]></ST
     </LineIds>
     <LineIds Name="T_CallMethod.Error.Get">
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_CallMethod.SetLogger">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="T_CallMethod.ToLog">
       <LineId Id="5" Count="0" />

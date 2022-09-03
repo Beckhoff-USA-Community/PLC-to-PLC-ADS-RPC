@@ -5,7 +5,7 @@
 VAR
    logger : I_Logger;
    _symbolHandle : REFERENCE TO ST_SymbolHandle; // just for debug
-	readWrite : T_AdsReadWrite;
+   readWrite : T_AdsReadWrite;
 
 END_VAR
 VAR CONSTANT
@@ -50,6 +50,17 @@ END_VAR]]></Declaration>
         </Implementation>
       </Get>
     </Property>
+    <Method Name="SetLogger" Id="{813599d6-b67b-4084-a890-21e5407d8539}">
+      <Declaration><![CDATA[METHOD PUBLIC SetLogger
+VAR_INPUT
+	logger : I_Logger;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.logger := logger;
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="ToLog" Id="{04be1afe-58ec-478b-9b0d-4ee650082211}">
       <Declaration><![CDATA[METHOD PRIVATE ToLog
 VAR_INPUT
@@ -116,6 +127,10 @@ TryGetHandle := readWrite.TryRequest( readWriteOpts, status => status );
     </LineIds>
     <LineIds Name="T_GetHandle.Error.Get">
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_GetHandle.SetLogger">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="T_GetHandle.ToLog">
       <LineId Id="5" Count="0" />

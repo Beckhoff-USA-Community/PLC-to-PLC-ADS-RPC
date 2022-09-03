@@ -12,6 +12,11 @@ VAR
 	xBusy				:BOOL;
 	xError				:BOOL;	
 	nErrorID			:UDINT;	
+	methodHandle : ST_SymbolHandle;
+	taskState : I_Executable;
+	invokeDone, invokeError, invokeBusy : BOOL;
+	logger : T_GetLastMsgLogger;
+	firstScan : BOOL := true;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -30,24 +35,55 @@ END_VAR
 //	bError					=>xError , 
 //	nErrorId				=>nErrorID );
 
-invokeRpc(bCall := xCall,
-   sNetId := '',
-   nPort := 851,
-   sMethodName := 'MAIN.fbMath#M_ADD',
-   nSrcAddrParameter := ADR(AddParams),
-   nLenParameter := SIZEOF(AddParams),
-   nDestAddrReturnValue := ADR(MeaningOfLife),
-   nLenReturnValue := SIZEOF(MeaningOfLife),
-   tTimeout := DEFAULT_ADS_TIMEOUT,
-   eComMode := E_AdsComMode.eAdsComModeFastCom,
-   bBusy => xBusy,
-   bError => xError,
-   nErrorId => nErrorID
-);
+IF firstScan THEN
+	firstScan := FALSE;
+	invokeRpc.SetLogger(logger);
+	
+END_IF
+
+logger.lastLog;
+logger.lasLogLevel;
+
+invokeRpc();
+
+methodHandle.SymbolAddress.Ads.netId := F_ScanAmsNetIds('0.0.0.0.0.0.0');
+methodHandle.SymbolAddress.Ads.port := 851;
+methodHandle.SymbolAddress.SymbolName := 'MAIN.fbMath#M_ADD';
+methodHandle.SymbolAddress.WriteRef := F_BIGTYPE(pData := ADR(AddParams), cbLen := SIZEOF(AddParams));
+methodHandle.SymbolAddress.ReadRef := F_LREAL(MeaningOfLife);
+
+IF xCall THEN
+   xCall := FALSE;
+   taskState := 0;
+
+   invokeRpc.TryInvokeMethodCall(
+      symbolHandle := methodHandle,
+      adsTimeout := DEFAULT_ADS_TIMEOUT,
+      status => taskState
+   );
+
+END_IF
+
+invokeBusy := taskState <> 0 AND_THEN taskState.Busy;
+invokeDone := taskState <> 0 AND_THEN taskState.Done;
+invokeError := taskState <> 0 AND_THEN taskState.Error;
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="45" Count="28" />
+      <LineId Id="161" Count="13" />
+      <LineId Id="203" Count="0" />
+      <LineId Id="202" Count="0" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="206" Count="1" />
+      <LineId Id="205" Count="0" />
+      <LineId Id="211" Count="0" />
+      <LineId Id="175" Count="0" />
+      <LineId Id="210" Count="0" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="176" Count="18" />
+      <LineId Id="209" Count="0" />
+      <LineId Id="198" Count="1" />
+      <LineId Id="195" Count="0" />
       <LineId Id="29" Count="0" />
     </LineIds>
   </POU>
