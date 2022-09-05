@@ -102,8 +102,8 @@ _symbolHandle := symbolHandle;
 
 readWriteOpts.AdsAddress := _symbolHandle.SymbolAddress.Ads;
 readWriteOpts.IndexGroup := ADSIGRP_SYM_RELEASEHND;
-readWriteOpts.IndexOffset := _symbolHandle.Handle;
-readWriteOpts.WriteParams := EMPTY_TARG;
+readWriteOpts.IndexOffset := 0;
+readWriteOpts.WriteParams := F_DWORD(_symbolHandle.Handle);
 readWriteOpts.ReadParams := EMPTY_TARG;
 readWriteOpts.Timeout := adsTimeout;
 
@@ -140,7 +140,7 @@ TryReleaseHandle := write.TryRequest( readWriteOpts, status => status );]]></ST>
       <LineId Id="64" Count="0" />
       <LineId Id="52" Count="3" />
       <LineId Id="61" Count="0" />
-      <LineId Id="63" Count="0" />
+      <LineId Id="81" Count="0" />
       <LineId Id="62" Count="0" />
       <LineId Id="56" Count="0" />
       <LineId Id="66" Count="0" />
