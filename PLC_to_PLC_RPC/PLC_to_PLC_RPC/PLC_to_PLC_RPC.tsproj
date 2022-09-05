@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.29">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.22">
 	<DataTypes>
 		<DataType>
 			<Name GUID="{79A5CA62-1AEB-4E60-B924-647718257543}" PersistentType="true">M_ADD_Parameters</Name>
@@ -18,10 +18,10 @@
 			</SubItem>
 		</DataType>
 	</DataTypes>
-	<Project ProjectGUID="{CA95FCE4-4CD8-40F6-9796-F720C7D380F5}" Target64Bit="true" ShowHideConfigurations="#x3c7">
+	<Project ProjectGUID="{CA95FCE4-4CD8-40F6-9796-F720C7D380F5}" TargetNetId="192.168.10.111.1.1" Target64Bit="true" ShowHideConfigurations="#x3c7">
 		<System>
-			<Settings MaxCpus="6" NonWinCpus="2" Packages="2">
-				<Cpu CpuId="5"/>
+			<Settings MaxCpus="4">
+				<Cpu CpuId="3"/>
 			</Settings>
 			<Tasks>
 				<Task Id="3" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="FB_InvokeRpcMethod" Id="{639a9909-011c-49da-ada4-fa1fe8ca3aec}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'hide_all_locals'}
 FUNCTION_BLOCK FB_InvokeRpcMethod
@@ -123,7 +123,9 @@ CASE eStep OF
 		fbReleaseHandle(NETID 		:= sNetId,
 						PORT 		:= nPort,
 						IDXGRP 		:= ADSIGRP_SYM_RELEASEHND,
-						IDXOFFS 	:= nMethodHandle,
+						IDXOFFS 	:= 0,
+            SRCADDR := ADR(nMethodHandle),
+            LEN := SIZEOF(nMethodHandle),
 						LEN 		:= 0,
 						WRITE 		:= TRUE,
 						TMOUT 		:= tTimeout,
@@ -138,5 +140,11 @@ CASE eStep OF
 	
 END_CASE]]></ST>
     </Implementation>
+    <LineIds Name="FB_InvokeRpcMethod">
+      <LineId Id="3" Count="87" />
+      <LineId Id="136" Count="1" />
+      <LineId Id="91" Count="11" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
   </POU>
 </TcPlcObject>
